@@ -1,6 +1,6 @@
 {
   "name": "my-portfolio",
-  "homepage": "[https://feranicus.github.io/mypageres](https://feranicus.github.io/mypageres)",
+  "homepage": "https://feranicus.github.io/mypageres",
   "private": true,
   "version": "0.0.0",
   "type": "module",
