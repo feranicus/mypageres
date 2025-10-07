@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-// --- MODIFICATION 1 of 3: IMPORT FIREBASE MODULES ---
 import { initializeApp } from 'firebase/app';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
-// --- URGENT: PASTE YOUR FIREBASE CONFIGURATION HERE ---
-// The visitor counter will not work until you replace these placeholder values.
-// To find your config:
-// 1. Go to your Firebase project: https://console.firebase.google.com/u/0/project/visitormyportferanicus/settings/general
-// 2. Scroll down to "Your apps".
-// 3. Click on the "</>" icon to view your web app's configuration.
-// 4. Copy the entire 'firebaseConfig' object and paste it here.
+// --- SECURITY WARNING ---
+// Your Firebase keys are visible here in plain text. Because your repository is public,
+// anyone on the internet can see them. For a personal portfolio, the risk is low.
+// For future projects, it is strongly recommended to use environment variables
+// (.env file and GitHub Secrets) to keep these keys private.
 const firebaseConfig = {
-  apiKey: "PASTE_YOUR_API_KEY_HERE",
-  authDomain: "PASTE_YOUR_PROJECT_ID.firebaseapp.com",
-  projectId: "PASTE_YOUR_PROJECT_ID",
-  storageBucket: "PASTE_YOUR_PROJECT_ID.appspot.com",
-  messagingSenderId: "PASTE_YOUR_SENDER_ID",
-  appId: "PASTE_YOUR_APP_ID"
+  apiKey: "AIzaSyBFGjby72I9PWr_jQX2uO6VmZbnjeWPT78",
+  authDomain: "visitormyportferanicus.firebaseapp.com",
+  projectId: "visitormyportferanicus",
+  storageBucket: "visitormyportferanicus.appspot.com",
+  messagingSenderId: "524932075939",
+  appId: "1:524932075939:web:61df1faa2a1595887fca16"
 };
 
 
@@ -253,9 +250,15 @@ function App() {
         checkVisitorLocation();
     }, []);
 
-    // --- MODIFICATION 3 of 3: ADD USEEFFECT FOR VISITOR TRACKING ---
+    // This useEffect handles visitor tracking
     useEffect(() => {
         const trackUniqueVisitor = async () => {
+            // Wait until Firebase is initialized
+            if (!functions) {
+                console.log("Firebase not initialized, skipping tracking.");
+                return;
+            }
+
             // Use sessionStorage to only track the visitor once per session
             if (sessionStorage.getItem('visitorTracked')) {
                 console.log("Visitor already tracked this session.");
@@ -282,17 +285,11 @@ function App() {
 
                 // Mark as tracked for this session
                 sessionStorage.setItem('visitorTracked', 'true');
-                console.log('Visitor session successfully tracked.');
+                console.log('SUCCESS: Visitor session tracked and data should be in Firestore.');
 
             } catch (error) {
                 console.error('Error tracking visitor:', error);
-                // --- TROUBLESHOOTING ---
-                // This "internal" error usually means one of two things:
-                // 1. The 'firebaseConfig' object above has not been filled with your real project keys.
-                // 2. Your Firebase project is not on the "Blaze" (Pay-as-you-go) plan. Cloud Functions
-                //    require this plan, even if your usage stays within the free tier.
-                //    You can upgrade here: https://console.firebase.google.com/u/0/project/visitormyportferanicus/usage/details
-                console.error("TROUBLESHOOTING: Did you replace the placeholder 'firebaseConfig' values? Is your Firebase project on the Blaze plan?");
+                console.error("TROUBLESHOOTING: Did you create the .env file? Is your Firebase project on the Blaze plan?");
             }
         };
 
@@ -606,4 +603,3 @@ function App() {
 }
 
 export default App;
-
