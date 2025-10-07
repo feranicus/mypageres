@@ -2,26 +2,36 @@ import React, { useState, useEffect, useRef } from 'react';
 import { initializeApp } from 'firebase/app';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
-// --- SECURITY WARNING ---
-// Your Firebase keys are visible here in plain text. Because your repository is public,
-// anyone on the internet can see them. For a personal portfolio, the risk is low.
-// For future projects, it is strongly recommended to use environment variables
-// (.env file and GitHub Secrets) to keep these keys private.
+// --- БЕЗОПАСНАЯ КОНФИГУРАЦИЯ ---
+// Приложение теперь безопасно считывает ваши ключи из переменных окружения.
+// Локально они загружаются из вашего файла .env, а при развертывании — из секретов GitHub.
 const firebaseConfig = {
-  apiKey: "AIzaSyBFGjby72I9PWr_jQX2uO6VmZbnjeWPT78",
-  authDomain: "visitormyportferanicus.firebaseapp.com",
-  projectId: "visitormyportferanicus",
-  storageBucket: "visitormyportferanicus.appspot.com",
-  messagingSenderId: "524932075939",
-  appId: "1:524932075939:web:61df1faa2a1595887fca16"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// --- ОТЛАДКА ---
+// Если приложение не может подключиться к Firebase, эта проверка не сработает.
+if (!firebaseConfig.apiKey) {
+  console.error("КРИТИЧЕСКАЯ ОШИБКА: Ключ API Firebase отсутствует. Убедитесь, что ваш файл .env настроен правильно и вы сконфигурировали секреты GitHub.");
+}
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const functions = getFunctions(app);
+// Инициализация Firebase
+let app;
+let functions;
+// Эта проверка предотвращает сбой приложения, если ключи отсутствуют.
+if (firebaseConfig.apiKey) {
+    app = initializeApp(firebaseConfig);
+    functions = getFunctions(app);
+}
 
-// --- DATA (existing code) ---
+
+// --- ДАННЫЕ, КОМПОНЕНТЫ, СТИЛИ (без изменений ниже) ---
+
 const profileData = {
     name: "J.V.",
     title: "Principal Architect & Technologist",
@@ -78,8 +88,6 @@ const ICONS = {
     Keynote: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>,
     GitHub: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>,
 };
-
-// --- HOOKS AND COMPONENTS (existing code) ---
 const useIntersectionObserver = (options) => {
     const [elements, setElements] = useState([]);
     const [entries, setEntries] = useState([]);
@@ -288,8 +296,7 @@ function App() {
                 console.log('SUCCESS: Visitor session tracked and data should be in Firestore.');
 
             } catch (error) {
-                console.error('Error tracking visitor:', error);
-                console.error("TROUBLESHOOTING: Did you create the .env file? Is your Firebase project on the Blaze plan?");
+                console.error('CRITICAL ERROR while tracking visitor:', error);
             }
         };
 
