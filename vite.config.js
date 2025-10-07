@@ -6,4 +6,4 @@ export default defineConfig({
   // Change this line
   base: '/', 
   plugins: [react()],
-})
+})cl
