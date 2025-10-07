@@ -1,27 +1,29 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-// --- ДАННЫЕ (ВРЕМЕННО ЗАХАРДКОДЖЕНЫ) ---
+// --- DATA ---
 
 const profileData = {
-  name: "J.V.",
-  title: "Principal Architect & Technologist",
-  summary: "A multifaceted principal architect with extensive expertise across Cloud, Cybersecurity, Open Source, and Networking. Proven track record of delivering high-impact, multi-million dollar projects for global leaders like Telefónica. Adept at full-stack development and designing secure, scalable, and innovative enterprise solutions.",
-  imageUrl: "https://placehold.co/240x240/1a1c22/e9edf3?text=J.V.", // Замените на реальное фото, например 'photo_2025-10-01_11-50-05.jpg'
+    name: "J.V.",
+    title: "Principal Architect & Technologist",
+    summary: "A multifaceted principal architect with extensive expertise across Cloud, Cybersecurity, Open Source, and Networking. Proven track record of delivering high-impact, multi-million dollar projects for global leaders like Telefónica. Adept at full-stack development and designing secure, scalable, and innovative enterprise solutions.",
+    imageUrl: "https://placehold.co/240x240/1a1c22/e9edf3?text=J.V.",
 };
 
 const contactInfo = {
-  email: "feranicus@s4biz.io",
-  telegram: "https://t.me/feranicus",
-  whatsapp: "https://wa.me/4915785541545",
-  linkedin: "https://www.linkedin.com/in/feranicus/",
-  github: "https://github.com/cybergodai/cybergodai",
+    email: "feranicus@s4biz.io",
+    telegram: "https://t.me/feranicus",
+    whatsapp: "https://wa.me/4915785541545",
+    linkedin: "https://www.linkedin.com/in/feranicus/",
+    github: "https://github.com/cybergodai/cybergodai",
 };
 
-const documents = [
-  { name: "My Resume", url: "https://docsend.com/view/8u87pkebcxht3pv2" },
-  { name: "Project Portfolio", url: "https://docsend.com/view/fishpm7ft5un6js9" },
-  { name: "Endorsement Letters", url: "https://docsend.com/view/uuyvqeteg3i9f2px" },
-  { name: "Cebit Keynote", url: "https://youtu.be/PWo0W9vdc-U" },
+// --- MODIFICATION 1 of 4: RENAME ORIGINAL DOCUMENTS FOR INITIAL STATE ---
+// This is the default list of documents with the German resume.
+const initialDocuments = [
+    { name: "My Resume", url: "https://docsend.com/view/8u87pkebcxht3pv2" }, // German URL
+    { name: "Project Portfolio", url: "https://docsend.com/view/fishpm7ft5un6js9" },
+    { name: "Endorsement Letters", url: "https://docsend.com/view/uuyvqeteg3i9f2px" },
+    { name: "Cebit Keynote", url: "https://youtu.be/PWo0W9vdc-U" },
 ];
 
 const experiences = [
@@ -51,7 +53,7 @@ const experiences = [
     }
 ];
 
-// --- ИКОНКИ (SVG-КОМПОНЕНТЫ) ---
+// --- ICONS (SVG COMPONENTS) ---
 
 const ICONS = {
     Email: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>,
@@ -66,7 +68,7 @@ const ICONS = {
 };
 
 
-// --- ХУК ДЛЯ АНИМАЦИИ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ ---
+// --- HOOK FOR SCROLL ANIMATION ---
 
 const useIntersectionObserver = (options) => {
     const [elements, setElements] = useState([]);
@@ -85,7 +87,7 @@ const useIntersectionObserver = (options) => {
 
         elements.forEach(element => {
             if (element) {
-               currentObserver.observe(element);
+                currentObserver.observe(element);
             }
         });
 
@@ -100,7 +102,7 @@ const useIntersectionObserver = (options) => {
 };
 
 
-// --- КОМПОНЕНТЫ ---
+// --- COMPONENTS ---
 
 const AnimatedCard = ({ children, className, animationDelay = '0s' }) => {
     const cardRef = useRef(null);
@@ -125,7 +127,8 @@ const AnimatedCard = ({ children, className, animationDelay = '0s' }) => {
     );
 };
 
-const Header = () => (
+// --- MODIFICATION 2 of 4: PASS `documents` STATE TO HEADER & CONTACTINFO ---
+const Header = ({ documents }) => (
   <header>
     <AnimatedCard className="hero" animationDelay="0.2s">
       <img src="https://cybergod.ai/photo_2025-10-01_11-50-05.jpg" alt="J.V. Profile Picture" className="profile-pic" />
@@ -135,11 +138,11 @@ const Header = () => (
         <p className="summary">{profileData.summary}</p>
       </div>
     </AnimatedCard>
-    <ContactInfo />
+    <ContactInfo documents={documents} />
   </header>
 );
 
-const ContactInfo = () => (
+const ContactInfo = ({ documents }) => (
   <AnimatedCard className="contact" animationDelay="0.4s">
     <h3>Contact Me</h3>
     <a href={`mailto:${contactInfo.email}`} className="row">
@@ -176,20 +179,19 @@ const ContactInfo = () => (
 );
 
 const Experience = () => (
-  <AnimatedCard className="section" animationDelay="0.6s">
-    <h2><span className="dot"></span> Core Expertise</h2>
-    <div className="xp">
-      {experiences.map((job, index) => (
-        <article className="job" key={index}>
-          <h3>{job.title}</h3>
-          <p>{job.description}</p>
-        </article>
-      ))}
-    </div>
-  </AnimatedCard>
+    <AnimatedCard className="section" animationDelay="0.6s">
+        <h2><span className="dot"></span> Core Expertise</h2>
+        <div className="xp">
+            {experiences.map((job, index) => (
+                <article className="job" key={index}>
+                    <h3>{job.title}</h3>
+                    <p>{job.description}</p>
+                </article>
+            ))}
+        </div>
+    </AnimatedCard>
 );
 
-// Компоненты-заглушки для будущего
 const Skills = () => (
     <AnimatedCard className="section" animationDelay="0.7s">
         <h2><span className="dot"></span> Skills</h2>
@@ -205,29 +207,82 @@ const Projects = () => (
 );
 
 
-// --- ГЛАВНЫЙ КОМПОНЕНТ ПРИЛОЖЕНИЯ ---
+// --- MAIN APP COMPONENT ---
 
 function App() {
-  const haloRef = useRef(null);
+    const haloRef = useRef(null);
+    // --- MODIFICATION 3 of 4: CREATE STATE FOR DOCUMENTS ---
+    // The documents list is now in state, allowing it to be updated.
+    const [documents, setDocuments] = useState(initialDocuments);
 
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (haloRef.current) {
-        const { clientX, clientY } = e;
-        const x = Math.round((clientX / window.innerWidth) * 100);
-        const y = Math.round((clientY / window.innerHeight) * 100);
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            if (haloRef.current) {
+                const { clientX, clientY } = e;
+                haloRef.current.style.transform = `translate(${clientX - 200}px, ${clientY - 200}px)`;
+            }
+        };
 
-        haloRef.current.style.transform = `translate(${clientX - 200}px, ${clientY - 200}px)`;
-      }
-    };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, []);
 
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-    
-  // Динамические стили и основной CSS. В реальном проекте лучше выносить в .css файлы
-  const GlobalStyles = () => (
-    <style>{`
+    // --- MODIFICATION 4 of 4: ADDED THIS USEEFFECT HOOK FOR LOCATION CHECK ---
+    // This entire `useEffect` block is new. It runs once when the app loads.
+    useEffect(() => {
+        const checkVisitorLocation = async () => {
+            let isFromIsrael = false;
+            const israeliResumeUrl = "https://cybergod.ai/jevpresaleil2025.html";
+
+            // Method 1: IP Address Geolocation (Primary)
+            try {
+                // We use a free API to get location data from the visitor's IP address.
+                const response = await fetch('https://ipapi.co/json/');
+                if (!response.ok) throw new Error('IP API response not OK');
+                const data = await response.json();
+                
+                // The API returns a two-letter country code. 'IL' is for Israel.
+                if (data && data.country_code === 'IL') {
+                    isFromIsrael = true;
+                    console.log('Visitor location determined as Israel via IP address.');
+                }
+            } catch (error) {
+                console.warn('IP-based geolocation failed:', error.message);
+                // If the IP check fails, we proceed to the fallback method.
+            }
+
+            // Method 2: Browser Timezone (Fallback)
+            // This runs only if the IP check failed or didn't identify Israel.
+            if (!isFromIsrael) {
+                try {
+                    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                    // 'Asia/Jerusalem' is the standard IANA time zone for Israel.
+                    if (timeZone === 'Asia/Jerusalem') {
+                        isFromIsrael = true;
+                        console.log('Visitor location inferred as Israel via browser timezone.');
+                    }
+                } catch (error) {
+                    console.warn('Could not determine timezone:', error);
+                }
+            }
+
+            // If the visitor is determined to be from Israel, update the resume URL
+            if (isFromIsrael) {
+                setDocuments(currentDocs => 
+                    currentDocs.map(doc => 
+                        doc.name === "My Resume" 
+                            ? { ...doc, url: israeliResumeUrl } 
+                            : doc
+                    )
+                );
+            }
+        };
+
+        checkVisitorLocation();
+    }, []); // The empty array [] ensures this effect runs only once on component mount.
+
+    const GlobalStyles = () => (
+        <style>{`
       :root {
         --bg: #0d0f14;
         --card: rgba(255, 255, 255, .06);
@@ -276,7 +331,7 @@ function App() {
       }
 
       .halo {
-        position: fixed; /* Изменено на fixed для следования за курсором */
+        position: fixed;
         top: 0;
         left: 0;
         width: 400px;
@@ -286,7 +341,7 @@ function App() {
         border-radius: 50%;
         pointer-events: none;
         z-index: 0;
-        transition: transform 0.2s ease-out; /* Плавное движение */
+        transition: transform 0.2s ease-out;
       }
 
       header {
@@ -298,7 +353,6 @@ function App() {
         align-items: stretch;
       }
       
-      /* Анимация появления карточек */
       .card {
         background: var(--card);
         -webkit-backdrop-filter: var(--glass);
@@ -507,26 +561,26 @@ function App() {
         }
       }
     `}</style>
-  );
+    );
 
-  return (
-    <>
-      <GlobalStyles />
-      <div className="page">
-        <div ref={haloRef} className="halo" aria-hidden="true"></div>
-        <Header />
-        <main className="grid">
-          <Experience />
-          <Skills />
-          <Projects />
-        </main>
-        <footer>
-          <p>&copy; 2024 J.V. | All Rights Reserved</p>
-        </footer>
-      </div>
-    </>
-  );
+    return (
+        <>
+            <GlobalStyles />
+            <div className="page">
+                <div ref={haloRef} className="halo" aria-hidden="true"></div>
+                {/* Pass the dynamic documents state to the Header component */}
+                <Header documents={documents} />
+                <main className="grid">
+                    <Experience />
+                    <Skills />
+                    <Projects />
+                </main>
+                <footer>
+                    <p>&copy; 2024 J.V. | All Rights Reserved</p>
+                </footer>
+            </div>
+        </>
+    );
 }
 
 export default App;
-
