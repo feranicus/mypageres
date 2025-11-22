@@ -3,5 +3,5 @@ import react from '@vitejs/plugin-react'
 
 export default defineConfig({
   plugins: [react()],
-  base: '/mypageres/',   // ← КЛЮЧЕВАЯ СТРОКА ДЛЯ GitHub Pages
+  base: '/', // ВАЖНО: для корня домена itzen.ai
 })
