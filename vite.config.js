@@ -1,10 +1,7 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 export default defineConfig({
-  base: '/mypageres/', 
+  base: '/',          // 👈 было /mypageres/, делаем корень
   plugins: [react()],
-  build: {
-    target: 'esnext'
-  }
-})
+});
