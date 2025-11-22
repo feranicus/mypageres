@@ -1,42 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { initializeApp } from 'firebase/app';
-import { getFunctions, httpsCallable } from 'firebase/functions';
 
-// --- БЕЗОПАСНАЯ КОНФИГУРАЦИЯ ---
-// Приложение теперь безопасно считывает ваши ключи из переменных окружения.
-// Локально они загружаются из вашего файла .env, а при развертывании — из секретов GitHub.
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
-  appId: import.meta.env.VITE_FIREBASE_APP_ID
-};
-
-// --- ОТЛАДКА ---
-// Если приложение не может подключиться к Firebase, эта проверка не сработает.
-if (!firebaseConfig.apiKey) {
-  console.error("КРИТИЧЕСКАЯ ОШИБКА: Ключ API Firebase отсутствует. Убедитесь, что ваш файл .env настроен правильно и вы сконфигурировали секреты GitHub.");
-}
-
-// Инициализация Firebase
-let app;
-let functions;
-// Эта проверка предотвращает сбой приложения, если ключи отсутствуют.
-if (firebaseConfig.apiKey) {
-    app = initializeApp(firebaseConfig);
-    functions = getFunctions(app);
-}
+// --- НАСТРОЙКА: K.I.S.S. ENDPOINT ДЛЯ GOOGLE APPS SCRIPT ---
+// !!! ВАШ РЕАЛЬНЫЙ URL Apps Script !!!
+const APPS_SCRIPT_ENDPOINT = "https://script.google.com/macros/s/AKfycbwZvagkbUoJ9El2PRA5rO-FRj9IgCvdymWR_Nn4RWVWB8Tl78S0bLWon9ucviGxmVVcEg/exec";
 
 
-// --- ДАННЫЕ, КОМПОНЕНТЫ, СТИЛИ (без изменений ниже) ---
-
+// --- DATA (existing code) ---
 const profileData = {
     name: "J.V.",
     title: "Principal Architect & Technologist",
     summary: "A multifaceted principal architect with extensive expertise across Cloud, Cybersecurity, Open Source, and Networking. Proven track record of delivering high-impact, multi-million dollar projects for global leaders like Telefónica. Adept at full-stack development and designing secure, scalable, and innovative enterprise solutions.",
-    imageUrl: "https://placehold.co/240x240/1a1c22/e9edf3?text=J.V.",
+    imageUrl: "https://cybergod.ai/photo_2025-10-01_11-50-05.jpg",
 };
 const contactInfo = {
     email: "feranicus@s4biz.io",
@@ -88,6 +62,8 @@ const ICONS = {
     Keynote: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>,
     GitHub: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>,
 };
+
+// --- HOOKS AND COMPONENTS (Hooks and other components remain the same) ---
 const useIntersectionObserver = (options) => {
     const [elements, setElements] = useState([]);
     const [entries, setEntries] = useState([]);
@@ -133,7 +109,7 @@ const AnimatedCard = ({ children, className, animationDelay = '0s' }) => {
 const Header = ({ documents }) => (
     <header>
         <AnimatedCard className="hero" animationDelay="0.2s">
-            <img src="https://cybergod.ai/photo_2025-10-01_11-50-05.jpg" alt="J.V. Profile Picture" className="profile-pic" />
+            <img src={profileData.imageUrl} alt="J.V. Profile Picture" className="profile-pic" /> 
             <div>
                 <h1 className="name">{profileData.name}</h1>
                 <div className="title">{profileData.title}</div>
@@ -204,13 +180,14 @@ const Projects = () => (
     </AnimatedCard>
 );
 
+
 // --- MAIN APP COMPONENT ---
 
 function App() {
     const haloRef = useRef(null);
     const [documents, setDocuments] = useState(initialDocuments);
 
-    // This useEffect handles the halo mouse-follow effect
+    // 1. Эффект для следования "гало" за курсором (без изменений)
     useEffect(() => {
         const handleMouseMove = (e) => {
             if (haloRef.current) {
@@ -222,7 +199,65 @@ function App() {
         return () => window.removeEventListener('mousemove', handleMouseMove);
     }, []);
 
-    // This useEffect handles the location check for the resume URL
+    // 2. Эффект для автоматического логирования посетителей в Google Sheets
+    useEffect(() => {
+        // Используем sessionStorage, чтобы трекать только один раз за сессию
+        if (sessionStorage.getItem('visitorLogged')) {
+            console.log("Visitor already logged this session.");
+            return;
+        }
+
+        const logVisitor = async () => {
+            let ipData = {};
+            
+            // 2.1 Получаем IP и Геолокацию
+            try {
+                const ipResponse = await fetch('https://ipapi.co/json/');
+                ipData = await ipResponse.json();
+            } catch (error) {
+                console.warn('IP API fetch failed, proceeding with limited data.');
+            }
+
+            // 2.2 Собираем данные для отправки
+            const dataToLog = {
+                // Имена полей должны совпадать с заголовками столбцов в Apps Script
+                ip: ipData.ip || 'Unknown',
+                country: ipData.country_code || 'Unknown',
+                resolution: `${window.screen.width}x${window.screen.height}`,
+                vendor: navigator.vendor || 'Unknown',
+                platform: navigator.platform || 'Unknown',
+                language: navigator.language || 'Unknown',
+            };
+
+            // 2.3 Формируем URL для отправки данных через GET-параметры (Apps Script K.I.S.S. метод)
+            const params = new URLSearchParams(dataToLog);
+            const urlWithParams = `${APPS_SCRIPT_ENDPOINT}?${params.toString()}`;
+
+            try {
+                // Отправляем запрос
+                await fetch(urlWithParams, {
+                    method: 'GET', // Apps Script настроен на обработку GET/POST
+                    mode: 'no-cors' // Режим, который необходим для кросс-доменных запросов к Apps Script
+                });
+
+                sessionStorage.setItem('visitorLogged', 'true');
+                console.log('Visitor data successfully logged to Google Sheet.');
+
+            } catch (error) {
+                console.error('Error logging visitor data:', error);
+            }
+        };
+        
+        // Запускаем через небольшую задержку
+        const timer = setTimeout(() => {
+            logVisitor();
+        }, 1500);
+
+        return () => clearTimeout(timer); // Очистка таймера
+
+    }, [documents]); 
+
+    // 3. Эффект для проверки местоположения (Израиль) для URL резюме (без изменений)
     useEffect(() => {
         const checkVisitorLocation = async () => {
             let isFromIsrael = false;
@@ -256,337 +291,287 @@ function App() {
             }
         };
         checkVisitorLocation();
-    }, []);
-
-    // This useEffect handles visitor tracking
-    useEffect(() => {
-        const trackUniqueVisitor = async () => {
-            // Wait until Firebase is initialized
-            if (!functions) {
-                console.log("Firebase not initialized, skipping tracking.");
-                return;
-            }
-
-            // Use sessionStorage to only track the visitor once per session
-            if (sessionStorage.getItem('visitorTracked')) {
-                console.log("Visitor already tracked this session.");
-                return;
-            }
-
-            try {
-                // Prepare client-side data to send to the backend
-                const clientData = {
-                    screenResolution: `${window.screen.width}x${window.screen.height}`,
-                    browserInfo: {
-                        vendor: navigator.vendor,
-                        platform: navigator.platform,
-                        language: navigator.language,
-                    },
-                };
-
-                // Get a reference to the cloud function
-                const trackVisitorFunction = httpsCallable(functions, 'trackVisitor');
-
-                // Call the function
-                console.log("Attempting to track visitor...");
-                await trackVisitorFunction(clientData);
-
-                // Mark as tracked for this session
-                sessionStorage.setItem('visitorTracked', 'true');
-                console.log('SUCCESS: Visitor session tracked and data should be in Firestore.');
-
-            } catch (error) {
-                console.error('CRITICAL ERROR while tracking visitor:', error);
-            }
-        };
-
-        // Wait a moment before tracking to ensure the page is settled
-        const timer = setTimeout(() => {
-            trackUniqueVisitor();
-        }, 1500);
-
-        return () => clearTimeout(timer); // Cleanup timer on component unmount
-    }, []); // Empty array ensures this runs only once on component mount.
+    }, [setDocuments]);
 
     const GlobalStyles = () => (
         <style>{`
-          :root {
-            --bg: #0d0f14;
-            --card: rgba(255, 255, 255, .06);
-            --ink: #e9edf3;
-            --muted: #a7b1c2;
-            --accent: #00aaff;
-            --accent-2: #00e0ff;
-            --ring: rgba(0, 170, 255, .25);
-            --shadow: 0 10px 30px rgba(0, 0, 0, .35);
-            --glass: blur(12px) saturate(130%);
-            --grad: conic-gradient(from 180deg at 50% 50%, #00aaff, #00e0ff, #73ffa8, #00aaff);
-          }
+            :root {
+                --bg: #0d0f14;
+                --card: rgba(255, 255, 255, .06);
+                --ink: #e9edf3;
+                --muted: #a7b1c2;
+                --accent: #00aaff;
+                --accent-2: #00e0ff;
+                --ring: rgba(0, 170, 255, .25);
+                --shadow: 0 10px 30px rgba(0, 0, 0, .35);
+                --glass: blur(12px) saturate(130%);
+                --grad: conic-gradient(from 180deg at 50% 50%, #00aaff, #00e0ff, #73ffa8, #00aaff);
+            }
 
-          * { box-sizing: border-box; }
+            * { box-sizing: border-box; }
 
-          html, body, #root { height: 100%; }
+            html, body, #root { height: 100%; }
 
-          body {
-            margin: 0;
-            font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
-            background:
-              radial-gradient(1200px 1200px at 10% -30%, rgba(0, 170, 255, .15), transparent 60%),
-              radial-gradient(1200px 1200px at 90% 110%, rgba(0, 224, 255, .18), transparent 60%),
-              linear-gradient(180deg, #0b0d12, #0d0f14 30%, #0d0f14 70%, #0b0d12);
-            color: var(--ink);
-            line-height: 1.6;
-            overflow-y: scroll;
-          }
+            body {
+                margin: 0;
+                font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+                background:
+                    radial-gradient(1200px 1200px at 10% -30%, rgba(0, 170, 255, .15), transparent 60%),
+                    radial-gradient(1200px 1200px at 90% 110%, rgba(0, 224, 255, .18), transparent 60%),
+                    linear-gradient(180deg, #0b0d12, #0d0f14 30%, #0d0f14 70%, #0b0d12);
+                color: var(--ink);
+                line-height: 1.6;
+                overflow-y: scroll;
+            }
 
-          a {
-            color: var(--accent-2);
-            text-decoration: none;
-            transition: color 0.2s ease;
-          }
+            a {
+                color: var(--accent-2);
+                text-decoration: none;
+                transition: color 0.2s ease;
+            }
 
-          a:hover {
-            color: #fff;
-            text-decoration: none;
-          }
+            a:hover {
+                color: #fff;
+                text-decoration: none;
+            }
 
-          .page {
-            max-width: 1100px;
-            margin: 40px auto 96px;
-            padding: clamp(18px, 2.5vw, 32px);
-            position: relative;
-          }
+            .page {
+                max-width: 1100px;
+                margin: 40px auto 96px;
+                padding: clamp(18px, 2.5vw, 32px);
+                position: relative;
+            }
 
-          .halo {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 400px;
-            height: 400px;
-            background: var(--grad);
-            filter: blur(80px) saturate(140%) opacity(.25);
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 0;
-            transition: transform 0.2s ease-out;
-          }
+            .halo {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 400px;
+                height: 400px;
+                background: var(--grad);
+                filter: blur(80px) saturate(140%) opacity(.25);
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 0;
+                transition: transform 0.2s ease-out;
+            }
 
-          header {
-            position: relative;
-            z-index: 1;
-            display: grid;
-            grid-template-columns: 1.3fr .7fr;
-            gap: clamp(16px, 2.2vw, 28px);
-            align-items: stretch;
-          }
-          
-          .card {
-            background: var(--card);
-            -webkit-backdrop-filter: var(--glass);
-            backdrop-filter: var(--glass);
-            border: 1px solid rgba(255, 255, 255, .08);
-            border-radius: 18px;
-            box-shadow: var(--shadow);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-          }
-          .card.is-visible {
-            opacity: 1;
-            transform: translateY(0);
-          }
-
-
-          .hero {
-            padding: clamp(50px, 6vw, 60px) clamp(20px, 2.8vw, 32px) clamp(30px, 4vw, 40px);
-            position: relative;
-            overflow: hidden;
-            isolation: isolate;
-            display: flex;
-            align-items: center;
-            gap: clamp(20px, 2.8vw, 32px);
-          }
-
-          .hero:before {
-            content: "";
-            position: absolute;
-            inset: 10px auto auto -50px;
-            width: 240px;
-            height: 240px;
-            background: radial-gradient(closest-side, rgba(0, 170, 255, .25), transparent);
-            filter: blur(30px);
-            border-radius: 50%;
-            z-index: -1;
-          }
-          
-          .profile-pic {
-            flex-shrink: 0;
-            width: clamp(180px, 20vw, 240px);
-            height: clamp(180px, 20vw, 240px);
-            border-radius: 18px;
-            object-fit: cover;
-            border: 4px solid rgba(255, 255, 255, .1);
-            box-shadow: 0 0 20px rgba(0, 170, 255, .5);
-          }
-
-          .name {
-            font-family: "Playfair Display", serif;
-            font-weight: 700;
-            letter-spacing: .2px;
-            line-height: 1;
-            font-size: clamp(34px, 5.6vw, 56px);
-            margin: 0 0 6px 0;
-            background: linear-gradient(92deg, #fff, #cfe7ff 45%, #c8f8ff 75%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            text-shadow: 0 1px 0 rgba(255, 255, 255, .15);
-          }
-
-          .title {
-            font-weight: 600;
-            color: var(--muted);
-            margin: 2px 0 14px;
-            font-size: clamp(14px, 1.6vw, 18px);
-          }
-
-          .summary {
-            margin-top: 14px;
-            color: #d6dbe6;
-            font-size: clamp(14px, 1.4vw, 16px);
-          }
-
-          .contact {
-            padding: clamp(16px, 2.2vw, 22px);
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-          }
-          
-          .contact h3 {
-              margin: 0 0 8px;
-              font-size: clamp(16px, 1.8vw, 18px);
-              font-weight: 700;
-              color: var(--ink);
-          }
-
-          .row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            transition: background 0.2s ease;
-            padding: 8px;
-            border-radius: 8px;
-          }
-          .row:hover {
-              background: rgba(255,255,255,0.05);
-          }
-
-          .row svg {
-            flex: 0 0 20px;
-            opacity: .9;
-          }
-          
-          .row div {
-              font-weight: 600;
-              font-size: 14px;
-          }
-
-          .grid {
-            margin-top: 26px;
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: clamp(16px, 2.4vw, 26px);
-          }
-
-          .section {
-            padding: clamp(18px, 2.4vw, 26px);
-          }
-
-          .section h2 {
-            margin: 0 0 16px;
-            font-size: clamp(20px, 2.2vw, 24px);
-            letter-spacing: .2px;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-          }
-
-          .section h2 .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #fff, var(--accent-2) 60%, var(--accent));
-            box-shadow: 0 0 0 6px rgba(0, 170, 255, .12), 0 0 28px var(--ring);
-          }
-
-          .xp {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 16px;
-          }
-
-          .job {
-            border: 1px solid rgba(255, 255, 255, .08);
-            border-radius: 14px;
-            padding: 20px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .02));
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-          }
-          .job:hover {
-              transform: translateY(-5px);
-              box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-          }
-
-          .job:after {
-            content: "";
-            position: absolute;
-            inset: auto auto -80% -20%;
-            width: 80%;
-            height: 180%;
-            background: radial-gradient(60% 60% at 80% 60%, rgba(0, 224, 255, .1), transparent 70%);
-            transform: rotate(8deg);
-            transition: transform 0.4s ease;
-          }
-          .job:hover:after {
-              transform: rotate(0deg) scale(1.1);
-          }
-
-          .job h3 {
-            margin: 0 0 8px;
-            font-size: 18px;
-          }
-          
-          .job p {
-              margin: 0;
-              color: var(--muted);
-              font-size: 15px;
-          }
-
-          footer {
-            margin-top: 40px;
-            padding: 14px 0;
-            color: var(--muted);
-            font-size: 13px;
-            text-align: center;
-          }
-
-          @media (max-width: 920px) {
             header {
-              grid-template-columns: 1fr;
+                position: relative;
+                z-index: 1;
+                display: grid;
+                grid-template-columns: 1.3fr .7fr;
+                gap: clamp(16px, 2.2vw, 28px);
+                align-items: stretch;
             }
-            .xp {
-              grid-template-columns: 1fr;
+            
+            .card {
+                background: var(--card);
+                -webkit-backdrop-filter: var(--glass);
+                backdrop-filter: var(--glass);
+                border: 1px solid rgba(255, 255, 255, .08);
+                border-radius: 18px;
+                box-shadow: var(--shadow);
+                opacity: 0;
+                transform: translateY(20px);
+                transition: opacity 0.8s ease, transform 0.8s ease;
             }
+            .card.is-visible {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+
             .hero {
-              flex-direction: column;
-              text-align: center;
-              align-items: center;
+                padding: clamp(50px, 6vw, 60px) clamp(20px, 2.8vw, 32px) clamp(30px, 4vw, 40px);
+                position: relative;
+                overflow: hidden;
+                isolation: isolate;
+                display: flex;
+                align-items: center;
+                gap: clamp(20px, 2.8vw, 32px);
             }
-          }
+
+            .hero:before {
+                content: "";
+                position: absolute;
+                inset: 10px auto auto -50px;
+                width: 240px;
+                height: 240px;
+                background: radial-gradient(closest-side, rgba(0, 170, 255, .25), transparent);
+                filter: blur(30px);
+                border-radius: 50%;
+                z-index: -1;
+            }
+            
+            .profile-pic {
+                flex-shrink: 0;
+                width: clamp(180px, 20vw, 240px);
+                height: clamp(180px, 20vw, 240px);
+                border-radius: 18px;
+                object-fit: cover;
+                border: 4px solid rgba(255, 255, 255, .1);
+                box-shadow: 0 0 20px rgba(0, 170, 255, .5);
+            }
+
+            .name {
+                font-family: "Playfair Display", serif;
+                font-weight: 700;
+                letter-spacing: .2px;
+                line-height: 1;
+                font-size: clamp(34px, 5.6vw, 56px);
+                margin: 0 0 6px 0;
+                background: linear-gradient(92deg, #fff, #cfe7ff 45%, #c8f8ff 75%);
+                -webkit-background-clip: text;
+                background-clip: text;
+                color: transparent;
+                text-shadow: 0 1px 0 rgba(255, 255, 255, .15);
+            }
+
+            .title {
+                font-weight: 600;
+                color: var(--muted);
+                margin: 2px 0 14px;
+                font-size: clamp(14px, 1.6vw, 18px);
+            }
+
+            .summary {
+                margin-top: 14px;
+                color: #d6dbe6;
+                font-size: clamp(14px, 1.4vw, 16px);
+            }
+
+            .contact {
+                padding: clamp(16px, 2.2vw, 22px);
+                display: flex;
+                flex-direction: column;
+                gap: 16px;
+            }
+            
+            .contact h3 {
+                margin: 0 0 8px;
+                font-size: clamp(16px, 1.8vw, 18px);
+                font-weight: 700;
+                color: var(--ink);
+            }
+
+            .row {
+                display: flex;
+                gap: 12px;
+                align-items: center;
+                transition: background 0.2s ease;
+                padding: 8px;
+                border-radius: 8px;
+            }
+            .row:hover {
+                background: rgba(255,255,255,0.05);
+            }
+
+            .row svg {
+                flex: 0 0 20px;
+                opacity: .9;
+            }
+            
+            .row div {
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            .grid {
+                margin-top: 26px;
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: clamp(16px, 2.4vw, 26px);
+            }
+
+            .section {
+                padding: clamp(18px, 2.4vw, 26px);
+            }
+
+            .section h2 {
+                margin: 0 0 16px;
+                font-size: clamp(20px, 2.2vw, 24px);
+                letter-spacing: .2px;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                gap: 12px;
+            }
+
+            .section h2 .dot {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background: radial-gradient(circle at 30% 30%, #fff, var(--accent-2) 60%, var(--accent));
+                box-shadow: 0 0 0 6px rgba(0, 170, 255, .12), 0 0 28px var(--ring);
+            }
+
+            .xp {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 16px;
+            }
+
+            .job {
+                border: 1px solid rgba(255, 255, 255, .08);
+                border-radius: 14px;
+                padding: 20px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, .02));
+                position: relative;
+                overflow: hidden;
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+            }
+            .job:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            }
+
+            .job:after {
+                content: "";
+                position: absolute;
+                inset: auto auto -80% -20%;
+                width: 80%;
+                height: 180%;
+                background: radial-gradient(60% 60% at 80% 60%, rgba(0, 224, 255, .1), transparent 70%);
+                transform: rotate(8deg);
+                transition: transform 0.4s ease;
+            }
+            .job:hover:after {
+                transform: rotate(0deg) scale(1.1);
+            }
+
+            .job h3 {
+                margin: 0 0 8px;
+                font-size: 18px;
+            }
+            
+            .job p {
+                margin: 0;
+                color: var(--muted);
+                font-size: 15px;
+            }
+
+            footer {
+                margin-top: 40px;
+                padding: 14px 0;
+                color: var(--muted);
+                font-size: 13px;
+                text-align: center;
+            }
+
+            @media (max-width: 920px) {
+                header {
+                    grid-template-columns: 1fr;
+                }
+                .xp {
+                    grid-template-columns: 1fr;
+                }
+                .hero {
+                    flex-direction: column;
+                    text-align: center;
+                    align-items: center;
+                }
+            }
         `}</style>
     );
 
