@@ -200,27 +200,32 @@ function App() {
     }, []);
 
     // 2. Эффект для автоматического логирования посетителей в Google Sheets
+    // !!! ИЗМЕНЕН: Теперь запускается немедленно и содержит полные логи для дебага !!!
     useEffect(() => {
-        // Используем sessionStorage, чтобы трекать только один раз за сессию
+        // 1. Используем sessionStorage, чтобы трекать только один раз за сессию
         if (sessionStorage.getItem('visitorLogged')) {
-            console.log("Visitor already logged this session.");
+            console.log("LOG: Visitor already tracked this session (skipping)."); 
             return;
         }
 
         const logVisitor = async () => {
             let ipData = {};
             
+            console.log("LOG: 1. logVisitor function STARTED."); // <-- Дебаг лог
+            
             // 2.1 Получаем IP и Геолокацию
             try {
                 const ipResponse = await fetch('https://ipapi.co/json/');
+                if (!ipResponse.ok) throw new Error("IP API failed"); 
                 ipData = await ipResponse.json();
+                console.log("LOG: 2. IP API fetch successful."); // <-- Дебаг лог
             } catch (error) {
-                console.warn('IP API fetch failed, proceeding with limited data.');
+                console.warn('LOG: IP API fetch failed, using placeholder data.');
+                ipData = { ip: 'API_Failed', country_code: 'XX' }; 
             }
 
             // 2.2 Собираем данные для отправки
             const dataToLog = {
-                // Имена полей должны совпадать с заголовками столбцов в Apps Script
                 ip: ipData.ip || 'Unknown',
                 country: ipData.country_code || 'Unknown',
                 resolution: `${window.screen.width}x${window.screen.height}`,
@@ -229,32 +234,29 @@ function App() {
                 language: navigator.language || 'Unknown',
             };
 
-            // 2.3 Формируем URL для отправки данных через GET-параметры (Apps Script K.I.S.S. метод)
+            // 2.3 Формируем URL для отправки данных
             const params = new URLSearchParams(dataToLog);
             const urlWithParams = `${APPS_SCRIPT_ENDPOINT}?${params.toString()}`;
-
+            console.log("LOG: 3. FINAL URL SENDING:", urlWithParams); // <-- Дебаг лог
+            
             try {
-                // Отправляем запрос
+                // ОТПРАВКА ЗАПРОСА
                 await fetch(urlWithParams, {
-                    method: 'GET', // Apps Script настроен на обработку GET/POST
-                    mode: 'no-cors' // Режим, который необходим для кросс-доменных запросов к Apps Script
+                    method: 'GET',
+                    mode: 'no-cors' 
                 });
 
                 sessionStorage.setItem('visitorLogged', 'true');
-                console.log('Visitor data successfully logged to Google Sheet.');
+                console.log('LOG: 4. Apps Script FETCH SUCCESSFUL. Check Google Sheet!'); // <-- Финальный лог успеха
 
             } catch (error) {
-                console.error('Error logging visitor data:', error);
+                console.error('LOG: CRITICAL ERROR sending data to Apps Script:', error);
             }
         };
         
-        // Запускаем через небольшую задержку
-        const timer = setTimeout(() => {
-            logVisitor();
-        }, 1500);
-
-        return () => clearTimeout(timer); // Очистка таймера
-
+        // !!! ЗАПУСКАЕМ НЕЗАМЕДЛИТЕЛЬНО, БЕЗ ТАЙМЕРА !!!
+        logVisitor(); 
+        
     }, [documents]); 
 
     // 3. Эффект для проверки местоположения (Израиль) для URL резюме (без изменений)
