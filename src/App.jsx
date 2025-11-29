@@ -51,6 +51,112 @@ const experiences = [
         description: "Led innovative blockchain projects including V-Bank's digital asset platform and the award-winning Enecuum decentralized platform. Co-founded Eticket4, a blockchain-based ticketing system for secure transactions."
     }
 ];
+
+// --- NEW/UPDATED DATA STRUCTURES ---
+
+const securityLayers = [
+    {
+        layer: "Layer 1: Identity & Access Control (IAM)",
+        focus: "The foundation of Zero Trust architecture.",
+        skills: [
+            "Zero Trust Architecture & SASE Design",
+            "IAM Policy Development (AWS, Azure Entra ID)",
+            "PAM/IAM for Enterprise Environments",
+            "RBAC & Least Privilege Service Accounts"
+        ]
+    },
+    {
+        layer: "Layer 2: Network & Edge Security",
+        focus: "Your perimeter defense and distributed system security.",
+        skills: [
+            "Edge Computing Architecture (10,000+ nodes)",
+            "Firewall Management (Fortinet, Palo Alto, CheckPoint)",
+            "Complex Networking (DWDM, IP Transit, MPLS, SD-WAN)",
+            "DDoS Protection for Tier-1 ISP"
+        ]
+    },
+    {
+        layer: "Layer 3: Application Security & DevSecOps",
+        focus: "Embedding security into the SDLC.",
+        skills: [
+            "Full DevSecOps Implementation (GitHub, Azure DevOps)",
+            "SAST/DAST & Secrets Management (CI/CD)",
+            "Polyglot Development (C#, Python, Go, Scala, Rust, Java)",
+            "Microservices & Event-Driven Architecture"
+        ]
+    },
+    {
+        layer: "Layer 4: AI/ML Architecture & Data Protection",
+        focus: "Securing intelligent and data-heavy platforms.",
+        skills: [
+            "Full-Lifecycle LLM Solutions (POC to Production)",
+            "Agentic AI Frameworks (Langsmith, LangGraph, AutoGen Equivalents)",
+            "Classical NLP (NER, tf-idf) for Data Prep",
+            "Data Encryption & Key Management (Banking & Telco)"
+        ]
+    },
+    {
+        layer: "Layer 5: Threat Detection & Offensive/Defensive Cyber",
+        focus: "Active defense and attacker-mindset-driven testing.",
+        skills: [
+            "Offensive Cyber Solutions (1-click/zero-click)",
+            "AI Adversarial Testing & Red Teaming (280k+ users)",
+            "SIEM/XDR & AI Observability (ELK, Prometheus, Opik Equivalents)",
+            "Cyber SIGINT & Lawful Interception",
+        ]
+    },
+    {
+        layer: "Layer 6: Cloud Architecture & Governance",
+        focus: "The engine room for modern applications.",
+        skills: [
+            "Multi-Cloud Migration Leadership (AWS, Azure, GCP)",
+            "Cloud Orchestration (Kubernetes, EKS, OpenShift, K3s)",
+            "Compliance (DORA, NIS2, GDPR, ISO 27001)",
+            "Open Source Strategy & Implementation (Canonical, Red Hat)"
+        ]
+    },
+    {
+        layer: "Layer 7: Automation, GRC & Program Management",
+        focus: "Scaling technical excellence and strategy.",
+        skills: [
+            "SAFe/Agile Program Leadership (Global, Multi-Million €)",
+            "IaaS/PaaS Automation (Terraform, OpenStack)",
+            "Presale to Delivery Full Lifecycle Management",
+            "Post-M&A IT Transition and Transformation"
+        ]
+    }
+];
+
+const projectsData = [
+    {
+        title: "Digital Transformation & Cloud Exit (Telefonica Germany)",
+        description: "Led the strategic program to migrate                      400+ applications                      and exit three physical data centers, moving the entire stack to                      AWS Public Cloud                     . Included re-platforming from Oracle to Postgress and implementing a modern CI/CD pipeline. This was a €200M, 2.5-year initiative.",
+        tags: ["Cloud Migration", "AWS", "Large-Scale Program", "DevOps"],
+    },
+    {
+        title: "AI Adversarial Testing & Defensive Architecture (Cybergod/AIHAWK)",
+        description: "Spearheaded the technical Red Team for the                      AIHAWK                      GenAI project, analyzing real-world jailbreaking and prompt injection attempts from                      280k+ users                     . Architected the                      'Cybergod'                      security product, designing defensive solutions for AI components and integrating LLM/RAG solutions.",
+        tags: ["Offensive AI", "Red Teaming", "GenAI", "LLM Security"],
+    },
+    {
+        title: "Global Edge Computing & Kubernetes Security (Volkswagen Group)",
+        description: "Designed and led the secure Edge Computing architecture for a massive distributed system spanning over                      10,000 global branches                     . The solution centralized the management of light-weight                      K3s Kubernetes                      clusters using Rancher and secured the perimeter with enterprise-grade Fortinet firewalls.",
+        tags: ["Edge Computing", "Kubernetes (K3s)", "DevSecOps", "Automotive"],
+    },
+    {
+        title: "Post-Acquisition IT Transformation (Tosca Services/Aldi)",
+        description: "Managed the technical integration and transformation following a major merger, tripling the IT landscape. Key deliverables included full migration to                      Microsoft Azure                     , ERP migration to MS Dynamics, and implementation of                      Azure DevOps                      for continuous integration.",
+        tags: ["M&A Integration", "Azure Cloud", "ERP", "Global Program"],
+    },
+    {
+        title: "Fintech Digital Asset Platform (Vbank, Fortune 100 Bank)",
+        description: "Architected and delivered full-lifecycle LLM solutions from POC to production for a major Fortune 100 Bank. Developed a                      blockchain-based digital asset investment platform                      for Vbank in Germany, utilizing Fireblocks and Avaloq technologies.",
+        tags: ["Fintech", "Blockchain", "LLM Solutions", "Banking"],
+    }
+];
+
+// --- ICONS AND HOOKS (existing code, unchanged) ---
+
 const ICONS = {
     Email: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>,
     Telegram: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 2 11 13H2l2.45-5.34L15 4l-3.36 7.12L22 2z"></path></svg>,
@@ -62,41 +168,6 @@ const ICONS = {
     Keynote: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>,
     GitHub: () => <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>,
 };
-
-// --- КОМПОНЕНТ ДЛЯ SEO (JSON-LD Schema Markup) ---
-// Этот компонент добавляет структурированные данные для Google
-const JsonLdSchema = () => (
-    <script type="application/ld+json">
-        {`
-            {
-                "@context": "https://schema.org",
-                "@type": "ProfilePage",
-                "name": "${profileData.name} - ${profileData.title}",
-                "description": "${profileData.summary}",
-                "image": "${profileData.imageUrl}",
-                "url": "https://itzen.ai/my-portfolio/",
-                "mainEntity": {
-                    "@type": "Person",
-                    "name": "${profileData.name}",
-                    "jobTitle": "${profileData.title}",
-                    "url": "https://itzen.ai/my-portfolio/",
-                    "sameAs": [
-                        "${contactInfo.linkedin}",
-                        "${contactInfo.github}",
-                        "${contactInfo.telegram}"
-                    ],
-                    "knowsAbout": [
-                        "Cloud Architecture",
-                        "Cybersecurity",
-                        "Open Source Ecosystems",
-                        "DevSecOps",
-                        "Blockchain"
-                    ]
-                }
-            }
-        `}
-    </script>
-);
 
 // --- HOOKS AND COMPONENTS (Hooks and other components remain the same) ---
 const useIntersectionObserver = (options) => {
@@ -189,6 +260,7 @@ const ContactInfo = ({ documents }) => (
         </a>
     </AnimatedCard>
 );
+
 const Experience = () => (
     <AnimatedCard className="section" animationDelay="0.6s">
         <h2><span className="dot"></span> Core Expertise</h2>
@@ -202,16 +274,45 @@ const Experience = () => (
         </div>
     </AnimatedCard>
 );
+
 const Skills = () => (
     <AnimatedCard className="section" animationDelay="0.7s">
-        <h2><span className="dot"></span> Skills</h2>
-        <p>Skills section is under construction. Coming soon!</p>
+        <h2><span className="dot"></span> 7-Layer Security & Core Skills</h2>
+        <div className="xp">
+            {securityLayers.map((layer, index) => (
+                <article className="job" key={index}>
+                    <h3 className="text-accent-2">{layer.layer}</h3>
+                    <p className="text-muted font-bold italic mb-2">{layer.focus}</p>
+                    <ul className="list-disc list-inside mt-2 space-y-1">
+                        {layer.skills.map((skill, skillIndex) => (
+                            <li key={skillIndex} className="text-sm text-ink">{skill}</li>
+                        ))}
+                    </ul>
+                </article>
+            ))}
+        </div>
     </AnimatedCard>
 );
+
+
 const Projects = () => (
     <AnimatedCard className="section" animationDelay="0.8s">
-        <h2><span className="dot"></span> Projects</h2>
-        <p>Projects section is under construction. Coming soon!</p>
+        <h2><span className="dot"></span> Featured Projects</h2>
+        <div className="xp">
+            {projectsData.map((project, index) => (
+                <article className="job" key={index}>
+                    <h3 className="text-accent">{project.title}</h3>
+                    <p className="text-muted text-sm">{project.description}</p>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                        {project.tags.map((tag, tagIndex) => (
+                            <span key={tagIndex} className="tag-pill">
+                                {tag}
+                            </span>
+                        ))}
+                    </div>
+                </article>
+            ))}
+        </div>
     </AnimatedCard>
 );
 
@@ -236,7 +337,7 @@ function App() {
 
     // 2. Эффект для автоматического логирования посетителей в Google Sheets
     useEffect(() => {
-        // 1. Используем sessionStorage, чтобы трекать только один раз за сессию
+        // 1. Using sessionStorage to track only once per session
         if (sessionStorage.getItem('visitorLogged')) {
             console.log("LOG: Visitor already tracked this session (skipping)."); 
             return;
@@ -245,20 +346,20 @@ function App() {
         const logVisitor = async () => {
             let ipData = {};
             
-            console.log("LOG: 1. logVisitor function STARTED."); // <-- Дебаг лог
+            console.log("LOG: 1. logVisitor function STARTED."); // Debug log
             
-            // 2.1 Получаем IP и Геолокацию
+            // 2.1 Get IP and Geolocation
             try {
                 const ipResponse = await fetch('https://ipapi.co/json/');
                 if (!ipResponse.ok) throw new Error("IP API failed"); 
                 ipData = await ipResponse.json();
-                console.log("LOG: 2. IP API fetch successful."); // <-- Дебаг лог
+                console.log("LOG: 2. IP API fetch successful."); // Debug log
             } catch (error) {
                 console.warn('LOG: IP API fetch failed, using placeholder data.');
                 ipData = { ip: 'API_Failed', country_code: 'XX' }; 
             }
 
-            // 2.2 Собираем данные для отправки
+            // 2.2 Collect data to send
             const dataToLog = {
                 ip: ipData.ip || 'Unknown',
                 country: ipData.country_code || 'Unknown',
@@ -268,32 +369,32 @@ function App() {
                 language: navigator.language || 'Unknown',
             };
 
-            // 2.3 Формируем URL для отправки данных
+            // 2.3 Formulate URL for sending data
             const params = new URLSearchParams(dataToLog);
             const urlWithParams = `${APPS_SCRIPT_ENDPOINT}?${params.toString()}`;
-            console.log("LOG: 3. FINAL URL SENDING:", urlWithParams); // <-- Дебаг лог
+            console.log("LOG: 3. FINAL URL SENDING:", urlWithParams); // Debug log
             
             try {
-                // ОТПРАВКА ЗАПРОСА
+                // SEND REQUEST
                 await fetch(urlWithParams, {
                     method: 'GET',
                     mode: 'no-cors' 
                 });
 
                 sessionStorage.setItem('visitorLogged', 'true');
-                console.log('LOG: 4. Apps Script FETCH SUCCESSFUL. Check Google Sheet!'); // <-- Финальный лог успеха
+                console.log('LOG: 4. Apps Script FETCH SUCCESSFUL. Check Google Sheet!'); // Final success log
 
             } catch (error) {
                 console.error('LOG: CRITICAL ERROR sending data to Apps Script:', error);
             }
         };
         
-        // !!! ЗАПУСКАЕМ НЕЗАМЕДЛИТЕЛЬНО, БЕЗ ТАЙМЕРА !!!
+        // !!! RUN IMMEDIATELY !!!
         logVisitor(); 
         
     }, [documents]); 
 
-    // 3. Эффект для проверки местоположения (Израиль) для URL резюме (без изменений)
+    // 3. Effect to check location (Israel) for resume URL 
     useEffect(() => {
         const checkVisitorLocation = async () => {
             let isFromIsrael = false;
@@ -586,7 +687,19 @@ function App() {
                 color: var(--muted);
                 font-size: 15px;
             }
-
+            
+            /* NEW STYLES FOR TAGS */
+            .tag-pill {
+                font-size: 12px;
+                font-weight: 500;
+                padding: 4px 8px;
+                border-radius: 12px;
+                background-color: rgba(0, 170, 255, 0.1); 
+                color: var(--accent-2);
+                border: 1px solid rgba(0, 170, 255, 0.3);
+                white-space: nowrap;
+            }
+            
             footer {
                 margin-top: 40px;
                 padding: 14px 0;
@@ -623,7 +736,7 @@ function App() {
                     <Projects />
                 </main>
                 <footer>
-                    <p>&copy; 2024 J.V. | All Rights Reserved</p>
+                    <p>&copy; 2025 J.V. | All Rights Reserved</p>
                 </footer>
             </div>
         </>
