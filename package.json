@@ -1,8 +1,9 @@
 {
-  "name": "my-portfolio",
+  "name": "itzen-ai-portfolio",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
+  "description": "Jev Vainsteins - Principal Architect portfolio. Cyberpunk / Ghost-in-the-Shell themed responsive PWA. Deployed to itzen.ai via GitHub Pages.",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -11,7 +12,6 @@
     "deploy": "npm run build && gh-pages -d dist -b gh-pages"
   },
   "dependencies": {
-    "firebase": "^10.12.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

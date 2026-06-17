@@ -2,65 +2,63 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
     <!-- CORE SEO -->
-    <title>Jev Vainsteins | Principal Architect in Cloud, Cybersecurity & Open Source</title>
-    <meta
-      name="description"
-      content="Principal Architect with deep expertise in cloud, cybersecurity, open source and networking. Designing and delivering high-impact, multi-million dollar solutions for global enterprises."
-    />
+    <title>Jev Vainsteins | Principal Architect — Cloud, Cybersecurity, Open Source &amp; AI</title>
+    <meta name="description" content="Principal Architect with deep expertise in cloud, cybersecurity, open source, AI and networking. Designing and delivering high-impact, multi-million dollar solutions for global enterprises." />
     <meta name="robots" content="index,follow" />
     <meta name="author" content="Jev Vainsteins" />
-    <link rel="canonical" href="https://itzen.ai/my-portfolio/" />
+    <link rel="canonical" href="https://itzen.ai/" />
 
-    <!-- OPEN GRAPH (LINKEDIN, FACEBOOK, WHATSAPP, ETC.) -->
-    <meta property="og:title" content="Jev Vainsteins | Principal Architect & Technologist" />
-    <meta
-      property="og:description"
-      content="A multifaceted principal architect with extensive expertise across cloud, cybersecurity, open source and networking."
-    />
+    <!-- PWA -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#05070a" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="itzen.ai" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!-- OPEN GRAPH -->
+    <meta property="og:title" content="Jev Vainsteins | Principal Architect &amp; Technologist" />
+    <meta property="og:description" content="Cloud, cybersecurity, open source, AI and networking architect delivering secure, scalable enterprise solutions." />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://itzen.ai/my-portfolio/" />
+    <meta property="og:url" content="https://itzen.ai/" />
     <meta property="og:image" content="https://cybergod.ai/photo_2025-10-01_11-50-05.jpg" />
 
     <!-- TWITTER CARD -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Jev Vainsteins | Principal Architect & Technologist" />
-    <meta
-      name="twitter:description"
-      content="Cloud, cybersecurity, open source and networking architect delivering secure, scalable enterprise solutions."
-    />
+    <meta name="twitter:title" content="Jev Vainsteins | Principal Architect &amp; Technologist" />
+    <meta name="twitter:description" content="Cloud, cybersecurity, open source, AI and networking architect delivering secure, scalable enterprise solutions." />
     <meta name="twitter:image" content="https://cybergod.ai/photo_2025-10-01_11-50-05.jpg" />
 
-    <!-- OPTIONAL: BRANDING / THEME COLOR -->
-    <meta name="theme-color" content="#0d0f14" />
+    <!-- FONTS (cyberpunk) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet" />
 
-    <!-- STRUCTURED DATA (JSON-LD) -->
+    <!-- STRUCTURED DATA -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Jev Vainsteins",
         "jobTitle": "Principal Architect & Technologist",
-        "url": "https://itzen.ai/my-portfolio/",
+        "url": "https://itzen.ai/",
         "image": "https://cybergod.ai/photo_2025-10-01_11-50-05.jpg",
         "sameAs": [
           "https://www.linkedin.com/in/feranicus/",
           "https://github.com/cybergodai/cybergodai"
         ],
-        "worksFor": {
-          "@type": "Organization",
-          "name": "Independent / Consulting"
-        }
+        "worksFor": { "@type": "Organization", "name": "Independent / Consulting" }
       }
     </script>
-
-    <!-- YOUR REACT APP ENTRY -->
-    <script type="module" src="/src/main.jsx"></script>
   </head>
   <body>
     <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
